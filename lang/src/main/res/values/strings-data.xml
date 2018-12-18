@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_music_play_error">音乐无法播放！</string>
+    <string name="data_music_wait">请等待加载完成</string>
+    <string name="data_music_refresh_done">刷新完成</string>
+
+
+    <string name="data_rsp_error_unknown">未知错误</string>
+
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">iMusic</string>
+
+    <string name="toolbar_title">我的音乐</string>
+</resources>

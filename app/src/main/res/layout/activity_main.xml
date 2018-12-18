@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarWithStatusBarSize"
+        android:elevation="@dimen/len_32"
+        android:outlineProvider="bounds">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/statusBarSize">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/toolbar_title"
+                android:textAppearance="@style/TextAppearance.Title" />
+        </FrameLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!--suppress CheckTagEmptyBody -->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/len_52"></android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <cn.lingmar.common.widget.MusicImageView
+            android:id="@+id/iv_music_img"
+            android:layout_width="@dimen/len_52"
+            android:layout_height="@dimen/len_52"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/len_16"
+            android:layout_marginBottom="@dimen/len_16"
+            android:clickable="true"
+            android:elevation="@dimen/len_36"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_music_logo" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/len_52"
+            android:layout_gravity="bottom"
+            android:background="#495A80"
+            android:clickable="true"
+            android:elevation="@dimen/len_32"
+            android:outlineProvider="bounds">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/len_84"
+                android:layout_marginTop="@dimen/len_6"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxLength="19"
+                android:text="歌曲名称"
+                android:textSize="@dimen/font_14" />
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/len_84"
+                android:layout_marginTop="@dimen/font_28"
+                android:lines="1"
+                android:maxLength="19"
+                android:text="歌手名称"
+                android:textSize="@dimen/font_12" />
+
+            <ImageView
+                android:id="@+id/iv_play"
+                android:layout_width="@dimen/len_28"
+                android:layout_height="@dimen/len_28"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/len_52"
+                android:src="@drawable/ic_music_play" />
+
+            <ImageView
+                android:id="@+id/iv_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/len_16"
+                android:src="@drawable/ic_music_list" />
+        </FrameLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

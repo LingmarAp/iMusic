@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/ic_touch_fg"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/len_8"
+    android:paddingBottom="@dimen/len_8">
+
+    <View
+        android:id="@+id/view_flag"
+        android:layout_width="@dimen/len_6"
+        android:layout_height="@dimen/len_24"
+        android:layout_gravity="center_vertical"
+        android:background="#00755E" />
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/len_24"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/len_32"
+        android:layout_marginEnd="@dimen/len_40"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/textPrimary"
+        android:textSize="@dimen/fontNameSize"
+        android:textStyle="bold"
+        tools:text="歌曲名称" />
+
+    <ImageView
+        android:layout_width="@dimen/font_20"
+        android:layout_height="@dimen/font_20"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/len_32"
+        android:layout_marginTop="@dimen/len_28"
+        android:layout_marginEnd="@dimen/len_40"
+        android:contentDescription="@string/app_name"
+        android:paddingStart="-7dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_cell_mic" />
+
+    <TextView
+        android:id="@+id/tv_singer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/len_52"
+        android:layout_marginTop="@dimen/len_28"
+        android:layout_marginEnd="@dimen/len_40"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textSecond"
+        android:textSize="@dimen/font_12"
+        tools:text="演唱者" />
+
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="@dimen/len_32"
+        android:layout_height="@dimen/len_32"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="@dimen/len_6"
+        android:contentDescription="@string/app_name"
+        android:padding="@dimen/len_6"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_cell_more" />
+
+
+</FrameLayout>
