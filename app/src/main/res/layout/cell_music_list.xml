@@ -11,9 +11,10 @@
     <View
         android:id="@+id/view_flag"
         android:layout_width="@dimen/len_6"
-        android:layout_height="@dimen/len_24"
+        android:layout_height="@dimen/len_32"
         android:layout_gravity="center_vertical"
-        android:background="#00755E" />
+        android:background="#00755E"
+        android:visibility="invisible" />
 
 
     <TextView

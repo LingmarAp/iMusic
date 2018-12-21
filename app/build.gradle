@@ -48,6 +48,11 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:${rootProject.ext.dbflowVersion}"
     implementation "com.github.Raizlabs.DBFlow:dbflow:${rootProject.ext.dbflowVersion}"
 
+    implementation "pub.devrel:easypermissions:$rootProject.ext.easyPMVersion"
+
+    // 波动纹特效
+    implementation 'com.carlos.voiceline:mylibrary:1.0.6'
+
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

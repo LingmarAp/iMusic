@@ -45,6 +45,8 @@ public class Music extends BaseDbModel<Music> implements Serializable {
 
     private Bitmap musicCover;
 
+    private Bitmap musicOriginalCover;
+
     public long getId() {
         return id;
     }
@@ -117,12 +119,20 @@ public class Music extends BaseDbModel<Music> implements Serializable {
         this.fileName = fileName;
     }
 
-    public Bitmap getMusicCover() {
-        return musicCover;
+    public Bitmap getMusicCover(Context context) {
+        if (this.musicCover == null)
+            this.musicCover = MusicUtil.loadCover(context, id, albumId, 150, 150);
+        return this.musicCover;
     }
 
-    public void setMusicCover(Context context) {
-        this.musicCover = MusicUtil.loadCover(context, id, albumId);;
+    public Bitmap getMusicOriginalCover(Context context) {
+        if (this.musicOriginalCover == null)
+            this.musicOriginalCover = MusicUtil.loadCover(context, id, albumId, 500, 500);
+        return this.musicOriginalCover;
+    }
+
+    public void setMusicCover(Bitmap musicCover) {
+        this.musicCover = musicCover;
     }
 
     public String getDescription() {

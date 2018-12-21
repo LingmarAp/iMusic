@@ -5,19 +5,20 @@ import android.content.Intent;
 import java.util.List;
 
 import cn.lingmar.common.app.Activity;
-import cn.lingmar.common.app.Application;
 import cn.lingmar.factory.Factory;
 import cn.lingmar.factory.data.DataSource;
 import cn.lingmar.factory.data.music.MusicRepository;
 import cn.lingmar.factory.model.Music;
+import cn.lingmar.factory.receiver.MusicReceiver;
 import cn.lingmar.factory.service.MusicService;
 
 public class MusicPresenter
         extends BaseSourcePresenter<Music, Music, MusicRepository, MusicContract.View>
-        implements MusicContract.Presenter {
+        implements MusicContract.Presenter, MusicReceiver.ReceiverListener {
 
     public MusicPresenter(MusicContract.View view) {
         super(new MusicRepository(), view);
+        MusicReceiver.addReceiverListener(this);
     }
 
     @Override
@@ -46,11 +47,8 @@ public class MusicPresenter
         ((Activity) getView()).startService(intent);
 
         // TODO 模拟Service发送的广播
-        // 判断图片是否已加载
-        if (music.getMusicCover() == null)
-            music.setMusicCover(Application.getInstance());
 
-        getView().onMusicPlay(music);
+        getView().onMusicPlay(music, index);
     }
 
     @Override
@@ -69,8 +67,26 @@ public class MusicPresenter
     }
 
     @Override
-    public void refresh() {
+    public void doRefresh() {
         Factory.getMusicHelper().refresh(((Activity) getView()).getApplicationContext(),
                 (DataSource.SucceedCallback<List<Music>>) music -> Factory.getMusicCenter().dispatch(music));
+    }
+
+    @Override
+    public void doInit() {
+        Intent intent = new Intent(((Activity) getView()).getApplicationContext(), MusicService.class);
+        intent.putExtra(MusicService.MUSIC_OPERATE, MusicService.INIT_MUSIC);
+        ((Activity) getView()).getApplicationContext().startService(intent);
+    }
+
+    @Override
+    public void onDataReceiver() {
+        MusicContract.View view = getView();
+        view.onMusicPlay(MusicService.getMusic(), MusicService.getCurrentMusicIndex());;
+//        view.onMusicChange(MusicService.getCurrentMusicIndex());
+        if (!MusicService.isPlay())
+            view.onMusicResume();
+        else
+            view.onMusicPause();
     }
 }

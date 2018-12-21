@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_assist_permissions">授予权限</string>
+
+    <string name="label_permission_read">读取文件</string>
+    <string name="label_permission_read_desc">用于读取音乐列表</string>
+    <string name="label_permission_write">写外部文件</string>
+    <string name="label_permission_write_desc">用于播放音乐</string>
+    <string name="label_permission_submit">授权</string>
+    <string name="label_permission_ok">授权成功！</string>
+
     <string name="data_music_play_error">音乐无法播放！</string>
     <string name="data_music_wait">请等待加载完成</string>
     <string name="data_music_refresh_done">刷新完成</string>
+
+    <string name="data_music_loop_done">已切换到列表循环</string>
+    <string name="data_music_loop_1_done">已切换到单曲循环</string>
+    <string name="data_music_random_done">已切换到随机播放</string>
 
 
     <string name="data_rsp_error_unknown">未知错误</string>

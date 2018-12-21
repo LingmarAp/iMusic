@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress CheckTagEmptyBody -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.lingmar.music">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -12,9 +13,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity"
+        <receiver
+            android:name="cn.lingmar.factory.receiver.MusicReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="cn.lingmar.android.MUSIC_BROADCAST" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="cn.lingmar.factory.receiver.MusicProgressReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="1000">
+            <intent-filter>
+                <action android:name="cn.lingmar.android.MUSIC_PROGRESS_BROADCAST" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Main"></activity>
+            android:theme="@style/AppTheme.Main" />
         <activity
             android:name=".LaunchActivity"
             android:screenOrientation="portrait"
@@ -25,6 +45,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.MusicPlayActivity"
+            android:screenOrientation="portrait"
+            ></activity>
 
         <service android:name="cn.lingmar.factory.service.MusicService" />
     </application>

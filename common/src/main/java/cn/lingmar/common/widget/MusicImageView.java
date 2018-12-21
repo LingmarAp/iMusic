@@ -42,4 +42,18 @@ public class MusicImageView extends CircleImageView {
                 .dontAnimate()
                 .into(this);
     }
+
+    public void setupFit(RequestManager manager, Bitmap bitmap) {
+        setupFit(manager, R.drawable.default_music_logo, bitmap);
+    }
+
+    public void setupFit(RequestManager manager, int resourceId, Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+        byte[] bytes = outputStream.toByteArray();
+
+        manager.load(bytes)
+                .override(500, 500)
+                .into(this);
+    }
 }

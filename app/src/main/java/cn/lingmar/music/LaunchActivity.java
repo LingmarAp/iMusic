@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Property;
 import android.view.View;
@@ -18,15 +19,26 @@ import java.util.List;
 import cn.lingmar.common.app.Activity;
 import cn.lingmar.factory.Factory;
 import cn.lingmar.factory.data.DataSource;
+import cn.lingmar.factory.data.helper.DbHelper;
 import cn.lingmar.factory.model.Music;
+import cn.lingmar.factory.service.MusicService;
 import cn.lingmar.music.activities.MainActivity;
+import cn.lingmar.music.frags.PermissionsFragment;
 
-public class LaunchActivity extends Activity {
+public class LaunchActivity extends Activity
+        implements DbHelper.ChangedListener<Music> {
     private ColorDrawable mBgDrawable;
 
     @Override
     protected int getContentLayoutId() {
         return R.layout.activity_launch;
+    }
+
+    @Override
+    protected void initBefore() {
+        super.initBefore();
+        // 注册数据库监听事件
+        DbHelper.addChangedListener(Music.class, this);
     }
 
     @Override
@@ -55,29 +67,31 @@ public class LaunchActivity extends Activity {
      * 等待扫描音乐文件
      */
     private void waitScanFile() {
-        // 扫描手机内音乐文件
-        Factory.getMusicHelper().refresh(this, (DataSource.SucceedCallback<List<Music>>) music -> {
-            // 存储到本地数据库
-            Factory.getMusicCenter().dispatch(music);
-
-            Run.onUiAsync(() -> {
-                // 跳转到主界面
-                skip();
+        // 检测是否包含权限（后续如联网等）
+        if (PermissionsFragment.haveAll(this, getSupportFragmentManager())) {
+            // 扫描手机内音乐文件
+            Factory.getMusicHelper().refresh(this, (DataSource.SucceedCallback<List<Music>>) music -> {
+                // 存储到本地数据库
+                Factory.getMusicCenter().dispatch(music);
             });
-        });
+        }
     }
 
     /**
      * 跳转到主界面
      */
     private void skip() {
-        startAnim(0.5f, () -> reallySkip());
+        startAnim(0.5f, () -> {
+            reallySkip();
+        });
     }
 
+    /**
+     * 跳转方法
+     */
     private void reallySkip() {
-        // TODO 检测是否包含权限（后续如联网等）
-
         MainActivity.show(this);
+        finish();
     }
 
     private void startAnim(float endProgress, final Runnable endCallback) {
@@ -113,4 +127,29 @@ public class LaunchActivity extends Activity {
             object.mBgDrawable.setColor((Integer) value);
         }
     };
+
+    @Override
+    public void onDataSave(List<Music> list) {
+        // 修改成在数据库存储完成后的回调中，进行界面跳转及..
+        // 开启Service
+        Run.onUiAsync(() -> {
+            startService(new Intent(LaunchActivity.this, MusicService.class));
+            // 跳转到主界面
+            skip();
+
+        });
+
+    }
+
+    @Override
+    public void onDataDelete(List<Music> list) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        // 注销对数据库的注册
+        DbHelper.removeChangedListener(Music.class, this);
+        super.onDestroy();
+    }
 }

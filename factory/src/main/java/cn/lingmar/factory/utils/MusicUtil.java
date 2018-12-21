@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
@@ -19,8 +21,11 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import cn.lingmar.common.app.Activity;
+import cn.lingmar.common.tools.UITool;
 import cn.lingmar.factory.R;
 import cn.lingmar.factory.model.Music;
+import cn.lingmar.utils.FastBlurUtil;
 
 public class MusicUtil {
     /**
@@ -65,7 +70,6 @@ public class MusicUtil {
             String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
             // 专辑
             String album = cursor.getString((cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM)));
-            // 专辑封面id，根据该id可以获得专辑封面图片
             long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
             // 持续时间
             long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
@@ -104,7 +108,7 @@ public class MusicUtil {
     /**
      * 从媒体库加载封面
      */
-    public static Bitmap loadCover(Context context, long songId, long albumId) {
+    public static Bitmap loadCover(Context context, long songId, long albumId, int width, int height) {
         Bitmap bm = null;
         // 专辑id和歌曲id小于0说明没有专辑、歌曲，并抛出异常
         if (albumId < 0 && songId < 0) {
@@ -140,6 +144,52 @@ public class MusicUtil {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             bm = bitmapDrawable.getBitmap();
         }
-        return Bitmap.createScaledBitmap(bm, 150, 150, true);
+        return Bitmap.createScaledBitmap(bm, width, height, true);
+    }
+
+    /**
+     * 格式化时间，将毫秒转换为分:秒格式//将long类型转化为String型
+     */
+    public static String formatTime(long time) {
+        String min = time / (1000 * 60) + "";
+        String sec = time % (1000 * 60) + "";
+        if (min.length() < 2) {
+            min = "0" + time / (1000 * 60) + "";
+        } else {
+            min = time / (1000 * 60) + "";
+        }
+        if (sec.length() == 4) {
+            sec = "0" + (time % (1000 * 60)) + "";
+        } else if (sec.length() == 3) {
+            sec = "00" + (time % (1000 * 60)) + "";
+        } else if (sec.length() == 2) {
+            sec = "000" + (time % (1000 * 60)) + "";
+        } else if (sec.length() == 1) {
+            sec = "0000" + (time % (1000 * 60)) + "";
+        }
+        return min + ":" + sec.trim().substring(0, 2);
+    }
+
+    public static Drawable getForegroundDrawable(Activity activity, Bitmap bitmap) {
+        Bitmap mBitmap = bitmap;
+        // 得到屏幕的宽高比，以便按比例切割图片一部分
+        final float widthHeightRate = (float) ((float) (UITool.getScreenWidth(activity)) * 1.0 /
+                (UITool.getScreenHeight(activity)) * 1.0);
+
+        int cropBitmapWidth = (int) (widthHeightRate * mBitmap.getHeight());
+        // 切割部分图片
+        Bitmap newBitmap = Bitmap.createBitmap(mBitmap, 0, 0, cropBitmapWidth,
+                mBitmap.getHeight());
+        // 缩小图片
+        if (newBitmap.getWidth() > 5000)
+            newBitmap = Bitmap.createScaledBitmap(newBitmap, mBitmap.getWidth() / 50, mBitmap
+                    .getHeight() / 50, false);
+
+        // 模糊化
+        final Bitmap blurBitmap = FastBlurUtil.doBlur(newBitmap, 8, true);
+        final Drawable foregroundDrawable = new BitmapDrawable(blurBitmap);
+        // 加入灰色遮罩层，避免图片过亮影响其他控件
+        foregroundDrawable.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        return foregroundDrawable;
     }
 }

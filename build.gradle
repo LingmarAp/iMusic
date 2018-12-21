@@ -41,6 +41,8 @@ ext {
     geniusVersion = '2.0.1'
     glideVersion = '3.7.0'
     circleimageviewVersion = '2.2.0'
+    
+    easyPMVersion = "0.3.0"
 
     dbflowVersion = "4.2.4"
 

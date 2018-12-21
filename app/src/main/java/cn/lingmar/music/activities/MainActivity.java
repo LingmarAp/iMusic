@@ -1,13 +1,11 @@
 package cn.lingmar.music.activities;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +23,9 @@ import cn.lingmar.common.widget.recycler.RecyclerAdapter;
 import cn.lingmar.factory.model.Music;
 import cn.lingmar.factory.presenter.MusicContract;
 import cn.lingmar.factory.presenter.MusicPresenter;
+import cn.lingmar.factory.service.MusicService;
 import cn.lingmar.music.R;
+import cn.lingmar.music.frags.MusicListFragment;
 
 public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
         implements MusicContract.View, SwipeRefreshLayout.OnRefreshListener {
@@ -49,7 +49,6 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
     MusicImageView mMusicImg;
 
     private RecyclerAdapter<Music> mAdapter;
-    private ObjectAnimator animator;
     private int index = 0; // 播放音乐的序号
 
     public static void show(Context context) {
@@ -62,8 +61,22 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
     }
 
     @Override
+    protected void initBefore() {
+        super.initBefore();
+        mPresenter.doInit();
+    }
+
+    @Override
     protected void initWidget() {
         super.initWidget();
+
+        // 初始化歌曲显示信息
+        Music music = MusicService.getMusic();
+        if (music != null) {
+            mMusicImg.setup(Glide.with(this), music.getMusicCover(this));
+            mTitle.setText(music.getTitle());
+            mContent.setText(music.getDescription());
+        }
 
         // 初始化Recycler
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -92,6 +105,7 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
                 // 播放歌曲
                 mPresenter.doMusicPlay(music, index = holder.getAdapterPosition());
                 // TODO 更改Item为播放时的颜色
+                // ((MainActivity.ViewHolder) holder).showFlag();
             }
         });
 
@@ -127,20 +141,37 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
     }
 
     @Override
-    public void onMusicPlay(Music music) {
-        startPlayAnim();
+    public void onMusicPlay(Music music, int index) {
+        // updateItem(index);
+        // 播放动画
+        startPlayAnim(mMusicImg);
         // 改变播放时显示的信息
         mTitle.setText(music.getTitle());
         mContent.setText(music.getDescription());
-        mMusicImg.setup(Glide.with(this), music.getMusicCover());
+        mMusicImg.setup(Glide.with(this), music.getMusicCover(this));
         mPlay.setImageResource(R.drawable.ic_music_stop);
+    }
+
+    private void updateItem(int index) {
+        int position = index;
+        LinearLayoutManager layoutManager = (LinearLayoutManager) mRecycler.getLayoutManager();
+        int firstItemPosition = layoutManager.findFirstVisibleItemPosition();
+        for (int i = 0; i < mRecycler.getChildCount(); i++) {
+            View view = mRecycler.getChildAt(position - firstItemPosition);
+            MainActivity.ViewHolder holder = (ViewHolder) mRecycler.getChildViewHolder(view);
+//            holder.hideFlag();
+            if (i == position - firstItemPosition) {
+                holder.showFlag();
+                break;
+            }
+        }
     }
 
     @Override
     public void onMusicResume() {
         mPlay.setImageResource(R.drawable.ic_music_stop);
         if (animator == null) {
-            startPlayAnim();
+            startPlayAnim(mMusicImg);
             return;
         }
         animator.resume();
@@ -155,10 +186,15 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
         animator.pause();
     }
 
+    @Override
+    public void onMusicChange(int index) {
+        updateItem(index);
+    }
+
     // SwipeRefreshLayout的刷新事件
     @Override
     public void onRefresh() {
-        mPresenter.refresh();
+        mPresenter.doRefresh();
     }
 
     @OnClick(R.id.iv_play)
@@ -166,17 +202,19 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
         mPresenter.doMusicStartOrPause();
     }
 
-    // 开始音乐播放动画
-    private void startPlayAnim() {
-        if (animator != null)
-            animator.cancel();
+    @OnClick(R.id.iv_music_img)
+    public void onMusicImgClick() {
+        MusicPlayActivity.show(this);
+    }
 
-        animator = ObjectAnimator.ofFloat(mMusicImg, "rotation", 0f, 360f);
-        animator.setDuration(6000);
-        animator.setInterpolator(new LinearInterpolator());//动画时间线性渐变
-        animator.setRepeatCount(ObjectAnimator.INFINITE);
-        animator.setRepeatMode(ObjectAnimator.RESTART);
-        animator.start();
+    @OnClick(R.id.frame_bottom)
+    public void onBottomFragmentClick() {
+        MusicPlayActivity.show(this);
+    }
+
+    @OnClick(R.id.iv_list)
+    public void onMusicListClick() {
+        MusicListFragment.show(getSupportFragmentManager());
     }
 
     class ViewHolder extends RecyclerAdapter.ViewHolder<Music> {
@@ -201,6 +239,14 @@ public class MainActivity extends PresenterListActivity<MusicContract.Presenter>
 
         @OnClick(R.id.iv_more)
         void onMoreClick() {
+        }
+
+        private void showFlag() {
+            mFlag.setVisibility(View.VISIBLE);
+        }
+
+        private void hideFlag() {
+            mFlag.setVisibility(View.INVISIBLE);
         }
     }
 }

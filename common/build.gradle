@@ -29,12 +29,10 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportVersion"
     implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportVersion"
     implementation "com.android.support:design:$rootProject.ext.supportVersion"
-
     implementation "net.qiujuer.genius:ui:$rootProject.ext.geniusVersion"
     implementation "net.qiujuer.genius:res:$rootProject.ext.geniusVersion"
     implementation "net.qiujuer.genius:kit-handler:$rootProject.ext.geniusVersion"
@@ -42,7 +40,6 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
     implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
-
     implementation 'com.android.support:appcompat-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
